@@ -26,6 +26,7 @@ class Company(models.Model):
 class Event(models.Model):
     event_id = models.AutoField(primary_key=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company_uuid = models.UUIDField(null=True)  # 👈 ADD Step -> 3
     title = models.CharField(max_length=100)
 
     def __str__(self):

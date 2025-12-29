@@ -38,3 +38,10 @@ Objective
 After adding a temporary UUID column in Step 1, all existing records contain NULL values in that column.
 This step generates and stores a unique UUID for each existing row.
 These UUIDs will later be promoted to primary keys.
+
+___________________________________________________________________________
+Step 3 – Propagate UUIDs to Related Tables (Foreign Keys)
+Objective
+
+After generating UUIDs for the primary table (Company) in Step 2, related tables still reference the old integer primary key.
+This step copies the generated UUID values into related tables so relationships remain intact when the primary key is switched.
