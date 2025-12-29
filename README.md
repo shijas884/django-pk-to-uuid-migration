@@ -27,6 +27,14 @@ class Company(models.Model):
 (the full model-code ams_pk_uuid.models )
 
 Important:
-   # Old PK stays
-   # New UUID field is empty
-   # Nothing breaks
+    Old PK stays
+    New UUID field is empty
+    Nothing breaks
+
+-------------------------------------------------------------------
+🟢 Step 2 – Populate UUID Values (Data Migration)
+Objective
+
+After adding a temporary UUID column in Step 1, all existing records contain NULL values in that column.
+This step generates and stores a unique UUID for each existing row.
+These UUIDs will later be promoted to primary keys.
