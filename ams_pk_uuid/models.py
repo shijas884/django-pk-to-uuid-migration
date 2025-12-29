@@ -15,7 +15,7 @@ class AppointmentUser(models.Model):
 
 class Company(models.Model):
     # company_id = models.AutoField(primary_key=True)
-    company_uuid = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)       
+    company_id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)       
     name = models.CharField(max_length=100)
     discription = models.TextField()
 
@@ -28,7 +28,7 @@ class Event(models.Model):
 
     # company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
-    company_uuid = models.UUIDField()  # 👈 ADD Step -> 3
+    company = models.ForeignKey(Company,on_delete=models.CASCADE,null=True)  # 👈 ADD Step -> 3
     title = models.CharField(max_length=100)
 
     def __str__(self):
