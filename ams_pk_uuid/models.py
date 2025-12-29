@@ -1,4 +1,6 @@
 from django.db import models
+# step -> import uuid
+import uuid
 
 # “first step 1 migration normal added the pk field migration”
 class AppointmentUser(models.Model):
@@ -13,6 +15,7 @@ class AppointmentUser(models.Model):
 
 class Company(models.Model):
     company_id = models.AutoField(primary_key=True)
+    company_uuid = models.UUIDField(null=True)        # 👈 NEW FIELD STEP -> 1
     name = models.CharField(max_length=100)
     discription = models.TextField()
 
