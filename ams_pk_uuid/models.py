@@ -14,8 +14,8 @@ class AppointmentUser(models.Model):
 
 
 class Company(models.Model):
-    company_id = models.AutoField(primary_key=True)
-    company_uuid = models.UUIDField(null=True)        # 👈 NEW FIELD STEP -> 1
+    # company_id = models.AutoField(primary_key=True)
+    company_uuid = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)       
     name = models.CharField(max_length=100)
     discription = models.TextField()
 

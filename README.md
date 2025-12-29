@@ -45,3 +45,17 @@ Objective
 
 After generating UUIDs for the primary table (Company) in Step 2, related tables still reference the old integer primary key.
 This step copies the generated UUID values into related tables so relationships remain intact when the primary key is switched.
+_________________________________________________________________________________
+STEP 4.1 – Modify Event model
+❌ OLD Event model
+class Event(models.Model):
+    event_id = models.AutoField(primary_key=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company_uuid = models.UUIDField(null=True)
+    title = models.CharField(max_length=100)
+
+✅ NEW Event model (remove FK)
+class Event(models.Model):
+    event_id = models.AutoField(primary_key=True)
+    company_uuid = models.UUIDField()   # now NOT NULL
+    title = models.CharField(max_length=100)
