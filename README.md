@@ -1,147 +1,168 @@
-🟢 PART 0 — Create Model (Normal Way)
+Below is a **very clear, step-by-step README**, where **each step is separated and explained simply**.
+No fancy words. Short lines. Easy for beginners to follow.
 
-What you do
+You can **copy-paste this directly**.
 
+---
+
+# Django Integer Primary Key to UUID – Step by Step
+
+This guide explains **how to change Django primary keys from Integer to UUID**
+**when data already exists** and **cannot be deleted**.
+
+Follow the steps **in order**.
+Do not skip any step.
+
+---
+
+## Step 0 – Create models normally
+
+Start with normal Django models.
+
+```python
 class Company(models.Model):
     company_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    discription = models.TextField()
-
-
-Then
-
-python manage.py makemigrations
-python manage.py migrate
-
-
-What this does
-
-Creates table
-
-Uses integer primary key
-
-Everything works normally
-
-🟢 STEP 1 — Add UUID Field (Preparation)
-
-What you change
-
-class Company(models.Model):
-    company_id = models.AutoField(primary_key=True)
-    company_uuid = models.UUIDField(null=True)
-    name = models.CharField(max_length=100)
-    discription = models.TextField()
-
-
-Then
-
-python manage.py makemigrations
-python manage.py migrate
-
-
-What this does
-
-Adds a new UUID column
-
-Old primary key stays
-
-No data is changed
-
-Safe step
-
-🟢 STEP 2 — Fill UUID Values (Data Migration)
-
-What you do
-
-Generate UUID for each row
-
-Save it in company_uuid
-
-Why
-
-UUID must exist before becoming primary key
-
-Result
-
-Every company now has its own UUID
-
-UUID is generated once
-
-🟢 STEP 3 — Copy UUID to Related Tables (Event)
-
-What you do
-
-Add company_uuid field to Event
-
-Copy Company.company_uuid into Event.company_uuid
-
-Why
-
-Event still uses old integer FK
-
-UUID relationship must be saved first
-
-Result
-
-Event now knows company by UUID
-
-Old FK still exists (for now)
-
-🟢 STEP 4 — Remove Old ForeignKey (Event)
-❌ OLD
-company = models.ForeignKey(Company, on_delete=models.CASCADE)
-company_uuid = models.UUIDField(null=True)
-
-✅ NEW
-company_uuid = models.UUIDField()
-
-
-What this does
-
-Removes integer FK
-
-Keeps UUID link
-
-Prepares for PK change
-
-🟢 STEP 5 — Promote UUID to Primary Key (Company)
-
-What you do
-
-class Company(models.Model):
-    company_id = models.UUIDField(primary_key=True)
-    name = models.CharField(max_length=100)
-    discription = models.TextField()
-
-
-Important
-
-❌ Do NOT generate new UUID
-
-Use existing values only
-
-Result
-
-UUID becomes primary key
-
-Old integer PK is gone
-
-🟢 STEP 6 — Restore ForeignKey (Final)
-
-What you do
 
 class Event(models.Model):
+    event_id = models.AutoField(primary_key=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
+```
+
+Run:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+Data exists in the database.
+
+---
+
+## Step 1 – Add UUID field (do NOT remove anything)
+
+Add a UUID field to the main table.
+
+```python
+company_uuid = models.UUIDField(null=True)
+```
+
+Run migrations.
+
+What happens:
+
+* Old integer primary key stays
+* UUID column is added
+* No data changes
+
+---
+
+## Step 2 – Fill UUID values (data migration)
+
+Create a custom migration to generate UUIDs.
+
+What happens:
+
+* Each row gets one UUID
+* UUID is saved in the database
+* UUID is generated only once
+
+Important:
+
+* Do NOT remove primary key
+* Do NOT touch ForeignKeys
+
+---
+
+## Step 3 – Copy UUID to related tables
+
+Add a UUID field to related tables (like `Event`).
+
+```python
+company_uuid = models.UUIDField(null=True)
+```
+
+Copy UUID from parent table.
+
+What happens:
+
+* Relation is preserved
+* Child table now knows parent UUID
+* Old ForeignKey still exists
+
+---
+
+## Step 4 – Remove old ForeignKey
+
+Remove the integer ForeignKey from the related table.
+
+```python
+# remove ForeignKey field
+```
+
+What happens:
+
+* Integer relation is removed
+* UUID relation remains
+* Safe to change primary key
+
+---
+
+## Step 5 – Make UUID the Primary Key
+
+Remove the old integer primary key.
+
+Make UUID the new primary key.
+
+```python
+company_id = models.UUIDField(primary_key=True)
+```
+
+Important:
+
+* Do NOT generate new UUID
+* Use existing UUID values only
+
+---
+
+## Step 6 – Add ForeignKey again (final step)
+
+Add ForeignKey back to related tables.
+
+```python
+company = models.ForeignKey(Company, on_delete=models.CASCADE)
+```
+
+What happens:
+
+* ForeignKey now uses UUID
+* Relations are restored
+* Migration is complete
+
+---
+
+## Final result
+
+* UUID is the primary key
+* All relations are correct
+* No data loss
+* Safe migration
+
+---
+
+## Important rules
+
+* Never change PK directly
+* Never use default value for UUID ForeignKey
+* Always use `null=True` first
+* Always follow step order
+
+---
+
+## Key lesson
+
+**UUID migration is about data safety, not speed.**
 
 
-Result
-
-ForeignKey now uses UUID
-
-Relationship restored
-
-Migration complete
-
-
-d
